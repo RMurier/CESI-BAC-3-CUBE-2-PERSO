@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur {
+  id                   String                @id @default(uuid())
+  clerkUserId          String                @unique
+  nom                  String
+  email                String                @unique
+  refRole              String
+  journalEmotionnel    JournalEmotionnel[]
+  favorisDetente       FavorisDetente[]
+  exercicesRespiration ExerciceRespiration[]
+  diagnostics          Diagnostic[]
+  role                 Role                  @relation(fields: [refRole], references: [id])
+}
+
+model Role {
+  id           String        @id @default(uuid())
+  nom          String        @unique
+  description  String?
+  utilisateurs Utilisateur[]
+}
+
+model Emotion {
+  id                String              @id @default(uuid())
+  nom               String
+  description       String
+  niveau            Int                 @default(1)
+  journalEmotionnel JournalEmotionnel[]
+}
+
+model JournalEmotionnel {
+  id             String   @id @default(uuid())
+  refUtilisateur String
+  refEmotion     String
+  date           DateTime @default(now())
+
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+  emotion     Emotion     @relation(fields: [refEmotion], references: [id])
+
+  @@index([refUtilisateur])
+  @@index([refEmotion])
+}
+
+model Detente {
+  id             String           @id @default(uuid())
+  nom            String
+  description    String
+  isActive       Boolean          @default(true)
+  favorisDetente FavorisDetente[]
+}
+
+model FavorisDetente {
+  id             String @id @default(uuid())
+  refUtilisateur String
+  refDetente     String
+
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+  detente     Detente     @relation(fields: [refDetente], references: [id], onDelete: Cascade)
+
+  @@unique([refUtilisateur, refDetente])
+}
+
+model ExerciceRespiration {
+  id             String   @id @default(uuid())
+  refUtilisateur String
+  nom            String
+  description    String
+  configuration  String
+  date           DateTime @default(now())
+
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+
+  @@index([refUtilisateur])
+}
+
+model Diagnostic {
+  id             String   @id @default(uuid())
+  refUtilisateur String
+  score          Int
+  date           DateTime @default(now())
+
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+
+  @@index([refUtilisateur])
+}
