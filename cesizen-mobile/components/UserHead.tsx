@@ -23,7 +23,7 @@ export default function UserHead() {
     return (
       <View style={styles.header}>
         <Text style={styles.logo}>CESIZen</Text>
-        <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/sign-in')}>
+        <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/login')}>
           <Text style={styles.loginText}>Se connecter</Text>
         </TouchableOpacity>
       </View>
@@ -51,28 +51,27 @@ export default function UserHead() {
       >
         <Pressable style={styles.overlay} onPress={() => setModalVisible(false)}>
           <View style={styles.menuContainer}>
-          <View style={styles.menu}>
-  <TouchableOpacity
-    style={styles.menuItem}
-    onPress={() => {
-      setModalVisible(false);
-      router.push('/mon-compte');
-    }}
-  >
-    <Text style={styles.menuText}>👤 Mon compte</Text>
-  </TouchableOpacity>
+            <View style={styles.menu}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  setModalVisible(false);
+                  router.push('/mon-compte');
+                }}
+              >
+                <Text style={styles.menuText}>👤 Mon compte</Text>
+              </TouchableOpacity>
 
-  <TouchableOpacity
-    style={styles.menuItem}
-    onPress={async () => {
-      setModalVisible(false);
-      await signOut();
-      router.replace('/sign-in');
-    }}
-  >
-    <Text style={styles.menuText}>🚪 Se déconnecter</Text>
-  </TouchableOpacity>
-</View>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={async () => {
+                  setModalVisible(false);
+                  await signOut();
+                }}
+              >
+                <Text style={styles.menuText}>🚪 Se déconnecter</Text>
+              </TouchableOpacity>
+            </View>
 
           </View>
         </Pressable>
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     width: '100%',
   },
-  
+
   menuItem: {
     width: '100%',
     paddingVertical: 18,
@@ -139,14 +138,14 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
     backgroundColor: '#fff',
   },
-  
+
   menuText: {
     fontSize: 16,
     fontWeight: '500',
     color: '#007AFF',
     textAlign: 'left',
   },
-  
+
   separator: {
     height: 1,
     backgroundColor: '#e6e6e6',

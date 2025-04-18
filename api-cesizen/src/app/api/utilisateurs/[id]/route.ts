@@ -8,8 +8,9 @@ const schemaUtilisateur = z.object({
 
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
     try {
+        const {id} = await params;
         const utilisateur = await prisma.utilisateur.findUnique({
-            where: { id: params.id },
+            where: { id: id },
         });
 
         if (!utilisateur) {
@@ -24,11 +25,12 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
     try {
+        const {id} = await params;
         const body = await request.json();
         const { nom } = schemaUtilisateur.parse(body);
 
         const utilisateur = await prisma.utilisateur.update({
-            where: { id: params.id },
+            where: { id: id },
             data: { nom },
         });
 
