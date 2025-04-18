@@ -7,22 +7,23 @@ import { encrypt } from '@/lib/cryptoHandler';
 const schemaUtilisateur = z.object({
   email: z.string().email(),
   nom: z.string().min(1),
-  motDePasse: z.string().min(6),
+  clerkUserId: z.string(),
 });
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, nom, motDePasse } = schemaUtilisateur.parse(body);
+    const { email, nom, clerkUserId } = schemaUtilisateur.parse(body);
 
     const encryptedEmail = encrypt(email);
 
-    const clerk = await clerkClient();
-    
-    const utilisateurClerk = await clerk.users.createUser({
-      emailAddress: [email],
-      password: motDePasse,
+    const existing = await prisma.utilisateur.findUnique({
+      where: { clerkUserId },
     });
+
+    if (existing) {
+      return NextResponse.json(existing, { status: 200 });
+    }
 
     const roleUtilisateur = await prisma.role.findUnique({
       where: { nom: 'Utilisateur' },
@@ -34,19 +35,16 @@ export async function POST(request: NextRequest) {
 
     const utilisateur = await prisma.utilisateur.create({
       data: {
-        clerkUserId: utilisateurClerk.id,
+        clerkUserId,
         email: encryptedEmail,
         nom,
         refRole: roleUtilisateur.id,
       },
     });
 
-    return NextResponse.json(
-      { id: utilisateur.id, clerkUserId: utilisateur.clerkUserId },
-      { status: 201 }
-    );
+    return NextResponse.json(utilisateur, { status: 201 });
   } catch (error: any) {
-    console.error('Erreur détaillée Clerk :', error.errors || error);
+    console.error('Erreur API /api/utilisateurs:', error);
     return NextResponse.json(
       { erreur: error.message || 'Erreur interne du serveur' },
       { status: 500 }

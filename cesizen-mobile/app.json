@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "cesizen-mobile",
+    "name": "CESIZen",
     "slug": "cesizen-mobile",
     "version": "1.0.0",
+      "scheme": "cesizen",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,7 +26,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-router"
     ]
   }
 }
