@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
+import { getAuth } from '@clerk/nextjs/server';
 
 const schemaUtilisateur = z.object({
     nom: z.string().min(1),
 });
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const {id} = await params;
         const utilisateur = await prisma.utilisateur.findUnique({
