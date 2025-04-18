@@ -1,9 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 
 export default function JournalIndex() {
   return (
     <View style={styles.container}>
+        <Stack.Screen
+        options={{
+            title: "Journal d'émotions"
+        }}
+        />
       <Text style={styles.title}>Mon journal émotionnel</Text>
       <Link href="/journal/add" asChild>
         <TouchableOpacity style={styles.addButton}>

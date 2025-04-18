@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { clerkClient } from '@clerk/nextjs/server';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import { encrypt } from '@/lib/cryptoHandler';

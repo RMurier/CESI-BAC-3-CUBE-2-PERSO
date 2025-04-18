@@ -1,15 +1,21 @@
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
+import { useAuth } from '@clerk/clerk-expo';
 
 export default function Footer() {
   const router = useRouter();
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
 
-  const tabs = [
-    { label: 'Accueil', icon: 'home', route: '/' },
-    { label: "Tracker d'émotions", icon: 'heart', route: '/journal' },
-  ];
+  const tabs = isSignedIn
+    ? [
+        { label: 'Accueil', icon: 'home', route: '/' },
+        { label: "Tracker d'émotions", icon: 'heart', route: '/journal' },
+      ]
+    : [
+        { label: 'Accueil', icon: 'home', route: '/' },
+      ];
 
   return (
     <View style={styles.footer}>

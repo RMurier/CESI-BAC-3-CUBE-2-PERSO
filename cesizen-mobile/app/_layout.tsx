@@ -11,7 +11,7 @@ export default function Layout() {
     >
        <Stack
       screenOptions={{
-        headerShown: false, // ✅ FORCER l’affichage du header
+        headerShown: false,
         headerTitleAlign: 'center',
       }}
     />
