@@ -10,7 +10,7 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     try {
         const {id} = await params;
         const utilisateur = await prisma.utilisateur.findUnique({
-            where: { id: id },
+            where: { clerkUserId: id },
         });
 
         if (!utilisateur) {
@@ -30,7 +30,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         const { nom } = schemaUtilisateur.parse(body);
 
         const utilisateur = await prisma.utilisateur.update({
-            where: { id: id },
+            where: { clerkUserId: id },
             data: { nom },
         });
 
