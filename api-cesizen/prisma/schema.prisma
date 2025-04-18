@@ -39,7 +39,8 @@ model JournalEmotionnel {
   id             String   @id @default(uuid())
   refUtilisateur String
   refEmotion     String
-  date           DateTime @default(now())
+  description    String
+  date           DateTime
 
   utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
   emotion     Emotion     @relation(fields: [refEmotion], references: [id])

@@ -14,7 +14,7 @@ import {
   Pressable,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Emotion } from '../../../interfaces/emotion';
 
 export default function AddEmotion() {
@@ -26,23 +26,23 @@ export default function AddEmotion() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [emotionRes, journalRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/emotions`),
-          fetch(`${API_BASE_URL}/api/journal/${user?.id}`),
+          fetch(`${API_BASE_URL}/api/journal/${user?.id}/today`),
         ]);
 
         const emotionData = await emotionRes.json();
         const journalData = await journalRes.json();
 
+
         if (emotionRes.ok) setEmotions(emotionData);
-        if (journalRes.ok && journalData?.date) {
-          const today = new Date().toISOString().split('T')[0];
-          const entryDate = new Date(journalData.date).toISOString().split('T')[0];
-          setAlreadyExists(today === entryDate);
+        if (journalRes.ok) {
+          setAlreadyExists(journalData ? true : false);
         }
       } catch (ex) {
         Alert.alert('Une erreur est survenue lors du chargement.');
@@ -62,13 +62,17 @@ export default function AddEmotion() {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/journal`, {
+      const now = new Date();
+      const utcMidnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+      const res = await fetch(`${API_BASE_URL}/api/journal/${user?.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          clerkUserId: user?.id,
-          emotionId: selectedEmotion.id,
-          note,
+          refUtilisateur: user?.id,
+          refEmotion: selectedEmotion.id,
+          description: note,
+          date: utcMidnight
         }),
       });
 
@@ -94,13 +98,26 @@ export default function AddEmotion() {
   }
 
   if (alreadyExists) {
-    return (
-      <View style={styles.container}>
-        <Stack.Screen options={{ title: "Journal d'émotions" }} />
-        <Text style={styles.title}>Tu as déjà enregistré ton émotion aujourd’hui 💙</Text>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.alreadyContainer}>
+      <Stack.Screen options={{ title: "Journal d'émotions" }} />
+      <Feather name="smile" size={48} color="#007AFF" style={{ marginBottom: 16 }} />
+      <Text style={styles.alreadyTitle}>C’est fait 🎉</Text>
+      <Text style={styles.alreadyMessage}>
+        Tu as déjà partagé ton émotion aujourd’hui.
+      </Text>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => {
+          router.back();
+        }}
+      >
+        <Text style={styles.backButtonText}>Retour</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 
   return (
     <View style={styles.container}>
@@ -244,4 +261,34 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#eee',
   },
+  alreadyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    backgroundColor: '#fff',
+  },
+  alreadyTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#007AFF',
+    marginBottom: 8,
+  },
+  alreadyMessage: {
+    fontSize: 16,
+    color: '#444',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  backButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },  
 });
