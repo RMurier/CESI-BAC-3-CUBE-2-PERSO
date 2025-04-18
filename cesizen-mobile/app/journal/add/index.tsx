@@ -33,7 +33,7 @@ export default function AddEmotion() {
       try {
         const [emotionRes, journalRes] = await Promise.all([
           fetch(`${API_BASE_URL}/api/emotions`),
-          fetch(`${API_BASE_URL}/api/journal/${user?.id}/today`),
+          fetch(`${API_BASE_URL}/api/journal/user/${user?.id}/today`),
         ]);
 
         const emotionData = await emotionRes.json();
@@ -65,7 +65,7 @@ export default function AddEmotion() {
       const now = new Date();
       const utcMidnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
-      const res = await fetch(`${API_BASE_URL}/api/journal/${user?.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/journal/user/${user?.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
