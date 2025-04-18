@@ -11,8 +11,8 @@ import {
     Pressable,
 } from 'react-native';
 import { useUser } from '@clerk/clerk-expo';
-import Constants from 'expo-constants';
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function MonCompte() {
     const { user, isLoaded } = useUser();
@@ -23,6 +23,8 @@ export default function MonCompte() {
     const [tempNom, setTempNom] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchInfos = async () => {
@@ -86,6 +88,11 @@ export default function MonCompte() {
                     <Feather name="edit-2" size={18} color="#007AFF" />
                 </TouchableOpacity>
             </View>
+            <View>
+                <TouchableOpacity onPress={() => {router.replace("/reset")}} style={styles.resetPasswordButton}>
+                    <Text style={styles.resetPasswordButtonText}>Changer mon mot de passe</Text>
+                </TouchableOpacity>
+            </View>
 
             <Modal
                 animationType="slide"
@@ -120,6 +127,16 @@ export default function MonCompte() {
 }
 
 const styles = StyleSheet.create({
+    resetPasswordButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+    },
+    resetPasswordButtonText: {
+        color: '#fff',
+        textAlign: 'center',
+    },
     container: {
         padding: 24,
         flex: 1,
