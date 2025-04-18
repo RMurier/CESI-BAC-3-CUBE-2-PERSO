@@ -1,6 +1,6 @@
 import { View, StyleSheet, TextInput, Button } from "react-native";
 import React, { useState } from "react";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useSignIn } from "@clerk/clerk-expo";
 
 const PwReset = () => {
@@ -9,6 +9,7 @@ const PwReset = () => {
   const [code, setCode] = useState("");
   const [successfulCreation, setSuccessfulCreation] = useState(false);
   const { signIn, setActive } = useSignIn();
+  const router = useRouter()
 
   const onRequestReset = async () => {
     try {
@@ -19,6 +20,7 @@ const PwReset = () => {
       });
       setSuccessfulCreation(true);
     } catch (err: any) {
+      console.error(err);
       alert(err.errors[0].message);
     }
   };
@@ -32,11 +34,13 @@ const PwReset = () => {
         password,
       });
       console.log(result);
-      alert("Password reset successfully");
+      alert("Mot de passe changé avec succès");
+      router.push("/")
 
       // Set the user session active, which will log in the user automatically
       await setActive({ session: result.createdSessionId });
     } catch (err: any) {
+      console.error(err);
       alert(err.errors[0].message);
     }
   };
@@ -49,7 +53,7 @@ const PwReset = () => {
         <>
           <TextInput
             autoCapitalize="none"
-            placeholder="simon@galaxies.dev"
+            placeholder="john.doe@example.com"
             value={emailAddress}
             onChangeText={setEmailAddress}
             style={styles.inputField}
@@ -57,7 +61,7 @@ const PwReset = () => {
 
           <Button
             onPress={onRequestReset}
-            title="Send Reset Email"
+            title="Envoyer un mail de réinitialisation"
             color={"#6c47ff"}
           ></Button>
         </>
@@ -68,13 +72,16 @@ const PwReset = () => {
           <View>
             <TextInput
               value={code}
+              keyboardType="numeric"
               placeholder="Code..."
+              autoCapitalize="none"
               style={styles.inputField}
               onChangeText={setCode}
             />
             <TextInput
-              placeholder="New password"
+              placeholder="Nouveau mot de passe"
               value={password}
+              autoCapitalize="none"
               onChangeText={setPassword}
               secureTextEntry
               style={styles.inputField}
@@ -82,7 +89,7 @@ const PwReset = () => {
           </View>
           <Button
             onPress={onReset}
-            title="Set new Password"
+            title="Changer le mot de passe"
             color={"#6c47ff"}
           ></Button>
         </>
