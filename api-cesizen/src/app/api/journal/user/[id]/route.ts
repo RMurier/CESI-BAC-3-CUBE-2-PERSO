@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export async function GET(req: NextRequest, { params }: { params: { clerkUserId: string } }) {
     const { clerkUserId } = await params;
-    const item = await prisma.journalEmotionnel.findMany({ where: { refUtilisateur: clerkUserId }, include: { emotion: true } });
+    const item = await prisma.journalEmotionnel.findMany({ where: { refUtilisateur: clerkUserId }, include: { emotion: true }, orderBy: {date: "desc"} });
     return item ? NextResponse.json(item) : NextResponse.json({ erreur: 'Not found' }, { status: 404 });
 }
 

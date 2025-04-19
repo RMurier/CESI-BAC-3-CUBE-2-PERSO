@@ -45,7 +45,7 @@ export default function EditEmotion() {
         if (found) {
           setSelectedEmotion(found);
         } else {
-          setSelectedEmotion(data.emotion); // fallback
+          setSelectedEmotion(data.emotion);
         }
       } catch (err) {
         Alert.alert('Erreur lors du chargement');
