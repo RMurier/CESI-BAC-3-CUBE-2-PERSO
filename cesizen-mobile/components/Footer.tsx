@@ -11,10 +11,12 @@ export default function Footer() {
   const tabs = isSignedIn
     ? [
         { label: 'Accueil', icon: 'home', route: '/' },
-        { label: "Tracker d'émotions", icon: 'heart', route: '/journal' },
+        { label: 'Respiration', icon: 'wind', route: '/respiration' },
+        { label: "Emotions", icon: 'heart', route: '/journal' },
       ]
     : [
         { label: 'Accueil', icon: 'home', route: '/' },
+        { label: 'Respiration', icon: 'wind', route: '/respiration' },
       ];
 
   return (
