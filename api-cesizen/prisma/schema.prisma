@@ -8,8 +8,7 @@ datasource db {
 }
 
 model Utilisateur {
-  id                   String                @id @default(uuid())
-  clerkUserId          String                @unique
+  clerkUserId          String                @id @unique
   nom                  String
   email                String                @unique
   refRole              String
@@ -29,9 +28,10 @@ model Role {
 
 model Emotion {
   id                String              @id @default(uuid())
-  nom               String
+  nom               String              @unique
   description       String
   niveau            Int                 @default(1)
+  icon              String
   journalEmotionnel JournalEmotionnel[]
 }
 
@@ -39,9 +39,10 @@ model JournalEmotionnel {
   id             String   @id @default(uuid())
   refUtilisateur String
   refEmotion     String
-  date           DateTime @default(now())
+  description    String
+  date           DateTime
 
-  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
   emotion     Emotion     @relation(fields: [refEmotion], references: [id])
 
   @@index([refUtilisateur])
@@ -61,7 +62,7 @@ model FavorisDetente {
   refUtilisateur String
   refDetente     String
 
-  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
   detente     Detente     @relation(fields: [refDetente], references: [id], onDelete: Cascade)
 
   @@unique([refUtilisateur, refDetente])
@@ -75,7 +76,7 @@ model ExerciceRespiration {
   configuration  String
   date           DateTime @default(now())
 
-  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
 
   @@index([refUtilisateur])
 }
@@ -86,7 +87,7 @@ model Diagnostic {
   score          Int
   date           DateTime @default(now())
 
-  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [id], onDelete: Cascade)
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
 
   @@index([refUtilisateur])
 }

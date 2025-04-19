@@ -10,37 +10,33 @@ import {
     Modal,
     Pressable,
 } from 'react-native';
-import { useUser } from '@clerk/clerk-expo';
+import { useUser, useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
 export default function MonCompte() {
     const { user, isLoaded } = useUser();
     const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
-
     const [nom, setNom] = useState('');
     const [editing, setEditing] = useState(false);
     const [tempNom, setTempNom] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-
     const router = useRouter();
-
     useEffect(() => {
         const fetchInfos = async () => {
             if (!isLoaded || !user) return;
             try {
-                console.log(user.id)
                 const res = await fetch(`${API_BASE_URL}/api/utilisateurs/${user.id}`);
                 const data = await res.json();
                 if (res.ok) {
-                    console.log(data)
                     setNom(data.nom || '');
                 } else {
                     console.warn('❌ API error:', data);
                 }
             } catch (err) {
                 console.error('❌ Fetch error:', err);
+                Alert.alert("Une erreur est survenue lors de la récupération de votre compte.")
             } finally {
                 setLoading(false);
             }
@@ -79,8 +75,14 @@ export default function MonCompte() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Mon compte</Text>
-
+            <Stack.Screen
+                options={{
+                    title: 'Mon compte',
+                    headerBackVisible: true,
+                    headerBackTitle: '', // ✅ cache le texte du bouton retour
+                    headerTitleAlign: 'center',
+                }}
+            />
             <View style={styles.row}>
                 <Text style={styles.label}>Nom :</Text>
                 <Text style={styles.value}>{nom}</Text>
@@ -89,7 +91,7 @@ export default function MonCompte() {
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity onPress={() => {router.replace("/reset")}} style={styles.resetPasswordButton}>
+                <TouchableOpacity onPress={() => { router.replace("/reset") }} style={styles.resetPasswordButton}>
                     <Text style={styles.resetPasswordButtonText}>Changer mon mot de passe</Text>
                 </TouchableOpacity>
             </View>
@@ -145,12 +147,6 @@ const styles = StyleSheet.create({
     loading: {
         flex: 1,
         justifyContent: 'center',
-    },
-    title: {
-        fontSize: 26,
-        fontWeight: '700',
-        marginBottom: 32,
-        textAlign: 'center',
     },
     row: {
         flexDirection: 'row',
