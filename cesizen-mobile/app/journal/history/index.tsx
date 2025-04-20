@@ -1,4 +1,3 @@
-// /app/journal/history.tsx
 import { useEffect, useState } from 'react';
 import {
     View,

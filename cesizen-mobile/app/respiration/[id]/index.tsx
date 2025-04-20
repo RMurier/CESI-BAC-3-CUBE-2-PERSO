@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useUser } from '@clerk/clerk-expo';
 
@@ -17,6 +17,8 @@ export default function RespirationDetail() {
   const [exercice, setExercice] = useState<any>(null);
   const [isFavori, setIsFavori] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
@@ -94,7 +96,7 @@ export default function RespirationDetail() {
       <Text style={styles.bienfait}>Bienfait : {exercice.bienfait}</Text>
       <Text style={styles.description}>{exercice.description}</Text>
 
-      <TouchableOpacity style={styles.startButton} onPress={() => {/* TODO: start exercise */}}>
+      <TouchableOpacity style={styles.startButton} onPress={() => {router.replace(`/respiration/${id}/start`)}}>
         <Text style={styles.startText}>Démarrer l’exercice</Text>
       </TouchableOpacity>
     </View>
