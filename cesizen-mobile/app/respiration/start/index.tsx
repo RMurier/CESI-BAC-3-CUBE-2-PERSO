@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 
@@ -46,8 +46,6 @@ export default function CustomStart() {
             setStepIndex(next);
             return steps[next].dureeSecondes;
           } else {
-            clearInterval(interval);
-            router.replace('/respiration/done');
             return 0;
           }
         }
@@ -57,6 +55,14 @@ export default function CustomStart() {
 
     return () => clearInterval(interval);
   }, [steps, stepIndex, remaining]);
+
+  useEffect(() => {
+    if (remaining === 0 && stepIndex === steps.length - 1 && steps.length > 0) {
+      setTimeout(() => {
+        router.replace('/respiration/done');
+      }, 500);
+    }
+  }, [remaining, stepIndex, steps.length]);
 
   const current = steps[stepIndex];
 
