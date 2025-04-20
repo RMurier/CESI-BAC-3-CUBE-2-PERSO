@@ -71,6 +71,10 @@ export default function ListeRespiration() {
         ))}
       </View>
 
+      <TouchableOpacity style={styles.customButton} onPress={() => router.push('/respiration/custom')}>
+        <Text style={styles.customButtonText}>+ Exercice personnalisé</Text>
+      </TouchableOpacity>
+
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 40 }} />
       ) : (
@@ -167,6 +171,18 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   filterTextSelected: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  customButton: {
+    marginHorizontal: 20,
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  customButtonText: {
     color: '#fff',
     fontWeight: '600',
   },
