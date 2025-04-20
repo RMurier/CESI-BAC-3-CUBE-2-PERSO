@@ -1,4 +1,3 @@
-// /app/respiration/custom.tsx
 import { useState } from 'react';
 import {
   View,
