@@ -8,15 +8,14 @@ datasource db {
 }
 
 model Utilisateur {
-  clerkUserId          String                @id @unique
-  nom                  String
-  email                String                @unique
-  refRole              String
-  journalEmotionnel    JournalEmotionnel[]
-  favorisDetente       FavorisDetente[]
-  exercicesRespiration ExerciceRespiration[]
-  diagnostics          Diagnostic[]
-  role                 Role                  @relation(fields: [refRole], references: [id])
+  clerkUserId       String              @id @unique
+  nom               String
+  email             String              @unique
+  refRole           String
+  journalEmotionnel JournalEmotionnel[]
+  diagnostics       Diagnostic[]
+  favoris           FavorisRespiration[]    @relation("UtilisateurFavoris")
+  role              Role                @relation(fields: [refRole], references: [id])
 }
 
 model Role {
@@ -49,36 +48,44 @@ model JournalEmotionnel {
   @@index([refEmotion])
 }
 
-model Detente {
-  id             String           @id @default(uuid())
-  nom            String
-  description    String
-  isActive       Boolean          @default(true)
-  favorisDetente FavorisDetente[]
-}
+model FavorisRespiration {
+  id                     String @id @default(uuid())
+  refUtilisateur         String
+  refExerciceRespiration String
 
-model FavorisDetente {
-  id             String @id @default(uuid())
-  refUtilisateur String
-  refDetente     String
+  utilisateur         Utilisateur         @relation("UtilisateurFavoris", fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
+  exerciceRespiration ExerciceRespiration @relation("ExerciceFavoris", fields: [refExerciceRespiration], references: [id], onDelete: Cascade)
 
-  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
-  detente     Detente     @relation(fields: [refDetente], references: [id], onDelete: Cascade)
-
-  @@unique([refUtilisateur, refDetente])
+  @@unique([refUtilisateur, refExerciceRespiration])
 }
 
 model ExerciceRespiration {
-  id             String   @id @default(uuid())
-  refUtilisateur String
-  nom            String
-  description    String
-  configuration  String
-  date           DateTime @default(now())
+  id          String              @id @default(uuid())
+  nom         String
+  description String
+  bienfait    String
+  icone       String
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  actions     ActionRespiration[] @relation("ExerciceActions")
+  favoris     FavorisRespiration[]    @relation("ExerciceFavoris")
+}
 
-  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
+model ActionRespiration {
+  id            String     @id @default(uuid())
+  exerciceId    String
+  ordre         Int
+  type          ActionType
+  dureeSecondes Int
 
-  @@index([refUtilisateur])
+  exercice ExerciceRespiration @relation("ExerciceActions", fields: [exerciceId], references: [id])
+}
+
+enum ActionType {
+  INSPIRER
+  EXPIRER
+  RETENIR
 }
 
 model Diagnostic {
