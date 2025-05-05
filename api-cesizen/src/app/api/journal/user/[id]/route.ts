@@ -9,7 +9,6 @@ export async function GET(req: NextRequest, { params }: { params: { clerkUserId:
 
 export async function POST(req: NextRequest, { params }: { params: { clerkUserId: string } }) {
     const body = await req.json();
-    const { clerkUserId } = await params;
     const updated = await prisma.journalEmotionnel.create({
         data: body,
     });
