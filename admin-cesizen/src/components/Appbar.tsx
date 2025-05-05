@@ -68,6 +68,9 @@ export default function AppBar() {
             <Link to="/emotions" className="text-gray-700 hover:text-blue-600 font-medium">
               Émotions
             </Link>
+            <Link to="/respiration" className="text-gray-700 hover:text-blue-600 font-medium">
+              Exercices de respiration
+            </Link>
           </>
         )}
       </div>
