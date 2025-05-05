@@ -8,14 +8,15 @@ datasource db {
 }
 
 model Utilisateur {
-  clerkUserId       String              @id @unique
+  clerkUserId       String               @id @unique
   nom               String
-  email             String              @unique
+  email             String               @unique
   refRole           String
+  isActive          Boolean              @default(true)
   journalEmotionnel JournalEmotionnel[]
   diagnostics       Diagnostic[]
-  favoris           FavorisRespiration[]    @relation("UtilisateurFavoris")
-  role              Role                @relation(fields: [refRole], references: [id])
+  favoris           FavorisRespiration[] @relation("UtilisateurFavoris")
+  role              Role                 @relation(fields: [refRole], references: [id])
 }
 
 model Role {
@@ -60,16 +61,16 @@ model FavorisRespiration {
 }
 
 model ExerciceRespiration {
-  id          String              @id @default(uuid())
+  id          String               @id @default(uuid())
   nom         String
   description String
   bienfait    String
   icone       String
-  isActive    Boolean             @default(true)
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  actions     ActionRespiration[] @relation("ExerciceActions")
-  favoris     FavorisRespiration[]    @relation("ExerciceFavoris")
+  isActive    Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  actions     ActionRespiration[]  @relation("ExerciceActions")
+  favoris     FavorisRespiration[] @relation("ExerciceFavoris")
 }
 
 model ActionRespiration {

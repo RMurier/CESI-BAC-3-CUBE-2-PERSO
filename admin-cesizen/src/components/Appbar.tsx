@@ -12,7 +12,7 @@ export default function AppBar() {
   const checkIsAdmin = async () => {
     if (!user) return
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_ADRESS}/api/utilisateurs/${user.id}/admin`)
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_ADDRESS}/api/utilisateurs/${user.id}/admin`)
       if (res.ok) {
         const data = await res.json()
         setIsAdmin(data.isAdmin)
