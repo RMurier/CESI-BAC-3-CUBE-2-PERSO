@@ -28,3 +28,36 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+
+    const exercice = await prisma.exerciceRespiration.create({
+      data: {
+        nom: body.nom,
+        description: body.description,
+        bienfait: body.bienfait,
+        icone: body.icone,
+        isActive: true,
+        actions: {
+          create: body.actions.map((action: any) => ({
+            ordre: action.ordre,
+            type: action.type,
+            dureeSecondes: action.dureeSecondes,
+          })),
+        },
+      },
+      include: {
+        actions: true,
+      },
+    })
+
+    return NextResponse.json(exercice)
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message || 'Erreur lors de la création de l’exercice' },
+      { status: 500 }
+    )
+  }
+}

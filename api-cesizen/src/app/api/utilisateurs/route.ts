@@ -9,6 +9,16 @@ const schemaUtilisateur = z.object({
   clerkUserId: z.string(),
 });
 
+export async function GET() {
+  const utilisateurs = await prisma.utilisateur.findMany({
+    include: {
+      role: true,
+    },
+  })
+
+  return NextResponse.json(utilisateurs)
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
