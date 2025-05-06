@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { userId: string } }
 ) {
   try {
-    const { userId } = await params;
+    const { userId } = params;
 
     const utilisateur = await prisma.utilisateur.findUnique({
       where: { clerkUserId: userId },
@@ -23,9 +23,11 @@ export async function GET(
       return NextResponse.json({ erreur: 'Utilisateur non trouvé' }, { status: 404 });
     }
 
-    const favoris = utilisateur.favoris.map((fav) => fav.exerciceRespiration);
+    const favorisActifs = utilisateur.favoris
+      .map((fav) => fav.exerciceRespiration)
+      .filter((ex) => ex.isActive);
 
-    return NextResponse.json(favoris);
+    return NextResponse.json(favorisActifs);
   } catch (error) {
     console.error('[GET /users/:id]', error);
     return NextResponse.json({ erreur: 'Erreur serveur' }, { status: 500 });

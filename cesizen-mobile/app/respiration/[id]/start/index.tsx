@@ -42,27 +42,32 @@ export default function StartRespiration() {
   }, [id]);
   
   useEffect(() => {
-    if (!exercice || remaining <= 0) return;
+    if (!exercice || exercice.actions.length === 0) return;
+  
+    const currentStep = exercice.actions[stepIndex];
+    if (!currentStep) return;
+  
+    setRemaining(currentStep.dureeSecondes);
   
     const interval = setInterval(() => {
       setRemaining((prev) => {
         if (prev <= 1) {
-          const next = stepIndex + 1;
-          if (next < exercice.actions.length) {
-            setStepIndex(next);
-            return exercice.actions[next].dureeSecondes;
+          clearInterval(interval);
+          const nextStep = stepIndex + 1;
+          if (nextStep < exercice.actions.length) {
+            setStepIndex(nextStep);
           } else {
-            clearInterval(interval);
-            router.replace('/respiration/done'); // ✅ Redirection ici
-            return 0;
+            router.replace('/respiration/done');
           }
+          return 0;
         }
         return prev - 1;
       });
     }, 1000);
   
     return () => clearInterval(interval);
-  }, [exercice, stepIndex, remaining]);
+  }, [exercice, stepIndex]);
+  
   
 
   if (loading) {

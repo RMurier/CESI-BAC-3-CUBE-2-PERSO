@@ -24,22 +24,40 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-    try {
-        const {id} = await params;
-        const body = await request.json();
-        const { nom } = schemaUtilisateur.parse(body);
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params
+  const body = await req.json()
 
-        const utilisateur = await prisma.utilisateur.update({
-            where: { clerkUserId: id },
-            data: { nom },
-        });
+  const dataToUpdate: any = {}
 
-        return NextResponse.json(utilisateur);
-    } catch (error: any) {
-        return NextResponse.json(
-            { erreur: error.message || 'Erreur serveur' },
-            { status: 500 }
-        );
-    }
+  if (typeof body.nom === 'string') {
+    dataToUpdate.nom = body.nom
+  }
+
+  if (typeof body.roleId === 'string') {
+    dataToUpdate.refRole = body.roleId
+  }
+
+  if (typeof body.isActive === 'boolean') {
+    dataToUpdate.isActive = body.isActive
+  }
+
+  if (Object.keys(dataToUpdate).length === 0) {
+    return NextResponse.json(
+      { message: 'Aucune donnée valide fournie pour la mise à jour.' },
+      { status: 400 }
+    )
+  }
+
+  try {
+    const updatedUser = await prisma.utilisateur.update({
+      where: { clerkUserId: id },
+      data: dataToUpdate,
+      include: { role: true },
+    })
+
+    return NextResponse.json(updatedUser)
+  } catch (error) {
+    return NextResponse.json({ message: 'Erreur lors de la mise à jour' }, { status: 500 })
+  }
 }

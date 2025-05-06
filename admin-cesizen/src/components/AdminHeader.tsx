@@ -46,7 +46,7 @@ function useAdminCheck(user: any, signOut: any, navigate: any) {
       }
 
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/utilisateurs/${user.id}/is-admin`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_ADDRESS}/api/utilisateurs/${user.id}/is-admin`);
         if (!res.ok) {
           setIsAdmin(false);
           await signOut();
