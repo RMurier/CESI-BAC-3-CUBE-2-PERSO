@@ -1,5 +1,3 @@
-import { useSignIn } from "@clerk/clerk-expo";
-import { Link, router } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -10,29 +8,70 @@ import {
   Text,
   Alert,
 } from "react-native";
+import { useSignIn, useAuth } from "@clerk/clerk-expo";
+import { router } from "expo-router";
 
 const Login = () => {
   const { signIn, setActive, isLoaded } = useSignIn();
+  const { getToken, signOut } = useAuth();
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onSignInPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    setLoading(true);
+  const decodeJwt = (token: string) => {
     try {
+      const payload = token.split(".")[1];
+      const decoded = JSON.parse(atob(payload));
+      return decoded;
+    } catch (err) {
+      throw new Error("Impossible de décoder le token.");
+    }
+  };
+
+  const onSignInPress = async () => {
+    if (!isLoaded) return;
+    setLoading(true);
+
+    try {
+      // Étape 1 : Authentifier avec Clerk
       const completeSignIn = await signIn.create({
         identifier: emailAddress,
         password,
       });
 
+      // Étape 2 : Activer la session localement
       await setActive({ session: completeSignIn.createdSessionId });
-      router.replace("/")
+
+      // Étape 3 : Récupérer le token et décoder l'ID Clerk
+      const token = await getToken();
+      if (!token) throw new Error("Token introuvable");
+
+      const payload = decodeJwt(token);
+      const clerkUserId = payload.sub;
+      if (!clerkUserId) throw new Error("ID utilisateur introuvable");
+
+      // Étape 4 : Vérifier si l'utilisateur est actif dans ta base
+      const res = await fetch(
+        `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/utilisateurs/check/${clerkUserId}`
+      );
+
+      if (!res.ok) throw new Error("Erreur lors de la vérification du compte");
+
+      const { isActive } = await res.json();
+
+      if (!isActive) {
+        await signOut(); // Déconnexion immédiate
+        Alert.alert("Accès refusé", "Votre compte a été désactivé.");
+        return;
+      }
+
+      // ✅ Accès autorisé
+      router.replace("/");
+
     } catch (err: any) {
-      alert(err.errors[0].message);
+      console.error(err);
+      Alert.alert("Erreur", err?.errors?.[0]?.message || err.message || "Erreur de connexion");
     } finally {
       setLoading(false);
     }
@@ -48,7 +87,7 @@ const Login = () => {
         style={styles.inputField}
       />
       <TextInput
-        placeholder="password"
+        placeholder="mot de passe"
         value={password}
         autoCapitalize="none"
         onChangeText={setPassword}
@@ -56,18 +95,15 @@ const Login = () => {
         style={styles.inputField}
       />
 
-      <Button onPress={onSignInPress} title="Login" color={"#6c47ff"}></Button>
+      <Button onPress={onSignInPress} title="Login" color="#6c47ff" disabled={loading} />
 
-      <Link href="/reset" asChild>
-        <Pressable style={styles.button}>
-          <Text>Mot de passe oublié ?</Text>
-        </Pressable>
-      </Link>
-      <Link href="/register" asChild>
-        <Pressable style={styles.button}>
-          <Text>Créer un compte</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={styles.button} onPress={() => router.push("/reset")}>
+        <Text>Mot de passe oublié ?</Text>
+      </Pressable>
+
+      <Pressable style={styles.button} onPress={() => router.push("/register")}>
+        <Text>Créer un compte</Text>
+      </Pressable>
     </View>
   );
 };
