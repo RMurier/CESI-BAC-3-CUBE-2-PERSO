@@ -42,58 +42,65 @@ export default function UsersPage() {
   }, [])
 
   return (
-    <div className="p-6">
+    <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Utilisateurs</h2>
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2">ID</th>
-            <th className="p-2">Nom</th>
-            <th className="p-2">Statut</th>
-            <th className="p-2">Rôle</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.clerkUserId} className="border-t">
-              <td className="p-2">{u.clerkUserId}</td>
-              <td className="p-2">{u.nom}</td>
-              <td className="p-2">{u.isActive ? 'Actif' : 'Désactivé'}</td>
-              <td className="p-2">
-                <select
-                  value={u.refRole}
-                  onChange={(e) => handleRoleChange(u.clerkUserId, e.target.value)}
-                  className="border rounded px-2 py-1"
-                >
-                  {roles.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.nom}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="p-2">
-                {u.isActive ? (
-                  <button
-                    onClick={() => toggleActivation(u.clerkUserId, false)}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
-                  >
-                    Désactiver
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => toggleActivation(u.clerkUserId, true)}
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
-                  >
-                    Activer
-                  </button>
-                )}
-              </td>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full border text-sm md:text-base">
+          <thead>
+            <tr className="bg-gray-100 text-left">
+              <th className="p-2 whitespace-nowrap">ID</th>
+              <th className="p-2 whitespace-nowrap">Nom</th>
+              <th className="p-2 whitespace-nowrap">Statut</th>
+              <th className="p-2 whitespace-nowrap">Rôle</th>
+              <th className="p-2 whitespace-nowrap">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((u) => (
+              <tr key={u.clerkUserId} className="border-t">
+                <td className="p-2 break-all">{u.clerkUserId}</td>
+                <td className="p-2">{u.nom}</td>
+                <td className="p-2">
+                  <span className={u.isActive ? 'text-green-600' : 'text-red-600'}>
+                    {u.isActive ? 'Actif' : 'Désactivé'}
+                  </span>
+                </td>
+                <td className="p-2">
+                  <select
+                    value={u.refRole}
+                    onChange={(e) => handleRoleChange(u.clerkUserId, e.target.value)}
+                    className="border rounded px-2 py-1 w-full"
+                  >
+                    {roles.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.nom}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="p-2">
+                  {u.isActive ? (
+                    <button
+                      onClick={() => toggleActivation(u.clerkUserId, false)}
+                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm w-full"
+                    >
+                      Désactiver
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleActivation(u.clerkUserId, true)}
+                      className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm w-full"
+                    >
+                      Activer
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

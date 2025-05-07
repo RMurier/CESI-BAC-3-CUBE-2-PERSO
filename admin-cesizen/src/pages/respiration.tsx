@@ -72,9 +72,9 @@ export default function ExerciceRespirationPage() {
   }, [])
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 max-w-6xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Exercices de respiration</h2>
-
+  
       <button
         onClick={() => {
           setForm({ nom: '', description: '', bienfait: '', icone: '' })
@@ -86,52 +86,54 @@ export default function ExerciceRespirationPage() {
       >
         Ajouter un exercice
       </button>
-
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2">Nom</th>
-            <th className="p-2">Description</th>
-            <th className="p-2">Bienfait</th>
-            <th className="p-2">Icône</th>
-            <th className="p-2">Statut</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {exercices.map((e) => (
-            <tr key={e.id} className="border-t">
-              <td className="p-2">{e.nom}</td>
-              <td className="p-2">{e.description}</td>
-              <td className="p-2">{e.bienfait}</td>
-              <td className="p-2">{e.icone}</td>
-              <td className="p-2">{e.isActive ? 'Actif' : 'Désactivé'}</td>
-              <td className="p-2 space-x-2">
-                <button
-                  onClick={() => handleEdit(e.id)}
-                  className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600 text-sm"
-                >
-                  Modifier
-                </button>
-                <button
-                  onClick={() => handleToggleActive(e.id, e.isActive)}
-                  className={`px-2 py-1 rounded text-sm ${e.isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
-                >
-                  {e.isActive ? 'Désactiver' : 'Activer'}
-                </button>
-              </td>
+  
+      <div className="overflow-x-auto">
+        <table className="min-w-full border text-sm md:text-base">
+          <thead>
+            <tr className="bg-gray-100 text-left">
+              <th className="p-2 whitespace-nowrap">Nom</th>
+              <th className="p-2 whitespace-nowrap">Description</th>
+              <th className="p-2 whitespace-nowrap">Bienfait</th>
+              <th className="p-2 whitespace-nowrap">Icône</th>
+              <th className="p-2 whitespace-nowrap">Statut</th>
+              <th className="p-2 whitespace-nowrap">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {exercices.map((e) => (
+              <tr key={e.id} className="border-t">
+                <td className="p-2 break-words">{e.nom}</td>
+                <td className="p-2 break-words">{e.description}</td>
+                <td className="p-2 break-words">{e.bienfait}</td>
+                <td className="p-2 break-words">{e.icone}</td>
+                <td className="p-2 text-sm">{e.isActive ? 'Actif' : 'Désactivé'}</td>
+                <td className="p-2 flex flex-col sm:flex-row gap-2">
+                  <button
+                    onClick={() => handleEdit(e.id)}
+                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600 text-sm"
+                  >
+                    Modifier
+                  </button>
+                  <button
+                    onClick={() => handleToggleActive(e.id, e.isActive)}
+                    className={`px-2 py-1 rounded text-sm ${e.isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
+                  >
+                    {e.isActive ? 'Désactiver' : 'Activer'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+  
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl space-y-4">
             <h3 className="text-xl font-semibold">
               {editId ? 'Modifier un exercice' : 'Nouvel exercice'}
             </h3>
-
+  
             {['nom', 'description', 'bienfait', 'icone'].map((f) => (
               <input
                 key={f}
@@ -142,7 +144,7 @@ export default function ExerciceRespirationPage() {
                 className="border rounded px-3 py-2 w-full"
               />
             ))}
-
+  
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <h4 className="text-md font-semibold">Actions</h4>
@@ -153,9 +155,9 @@ export default function ExerciceRespirationPage() {
                   + Ajouter
                 </button>
               </div>
-
+  
               {actions.map((a, i) => (
-                <div key={i} className="flex gap-2 items-center">
+                <div key={i} className="flex flex-wrap sm:flex-nowrap gap-2 items-center">
                   <span className="text-sm w-5 text-gray-500">{i + 1}.</span>
                   <select
                     value={a.type}
@@ -164,7 +166,7 @@ export default function ExerciceRespirationPage() {
                       updated[i].type = e.target.value as ActionType
                       setActions(updated)
                     }}
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 flex-1"
                   >
                     <option value="INSPIRER">Inspirer</option>
                     <option value="EXPIRER">Expirer</option>
@@ -179,7 +181,7 @@ export default function ExerciceRespirationPage() {
                       updated[i].dureeSecondes = Number(e.target.value)
                       setActions(updated)
                     }}
-                    className="border rounded px-2 py-1 w-20"
+                    className="border rounded px-2 py-1 w-24"
                   />
                   <span className="text-sm text-gray-600">secondes</span>
                   <button
@@ -191,17 +193,17 @@ export default function ExerciceRespirationPage() {
                 </div>
               ))}
             </div>
-
-            <div className="flex justify-end gap-2 pt-4">
+  
+            <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-full sm:w-auto"
               >
                 Annuler
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full sm:w-auto"
               >
                 {editId ? 'Mettre à jour' : 'Créer'}
               </button>
