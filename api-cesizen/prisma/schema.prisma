@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur {
+  clerkUserId       String               @id @unique
+  nom               String
+  email             String               @unique
+  refRole           String
+  isActive          Boolean              @default(true)
+  journalEmotionnel JournalEmotionnel[]
+  diagnostics       Diagnostic[]
+  favoris           FavorisRespiration[] @relation("UtilisateurFavoris")
+  role              Role                 @relation(fields: [refRole], references: [id])
+}
+
+model Role {
+  id           String        @id @default(uuid())
+  nom          String        @unique
+  description  String?
+  utilisateurs Utilisateur[]
+}
+
+model Emotion {
+  id                String              @id @default(uuid())
+  nom               String              @unique
+  description       String
+  niveau            Int                 @default(1)
+  icon              String
+  journalEmotionnel JournalEmotionnel[]
+}
+
+model JournalEmotionnel {
+  id             String   @id @default(uuid())
+  refUtilisateur String
+  refEmotion     String
+  description    String
+  date           DateTime
+
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
+  emotion     Emotion     @relation(fields: [refEmotion], references: [id])
+
+  @@index([refUtilisateur])
+  @@index([refEmotion])
+}
+
+model FavorisRespiration {
+  id                     String @id @default(uuid())
+  refUtilisateur         String
+  refExerciceRespiration String
+
+  utilisateur         Utilisateur         @relation("UtilisateurFavoris", fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
+  exerciceRespiration ExerciceRespiration @relation("ExerciceFavoris", fields: [refExerciceRespiration], references: [id], onDelete: Cascade)
+
+  @@unique([refUtilisateur, refExerciceRespiration])
+}
+
+model ExerciceRespiration {
+  id          String               @id @default(uuid())
+  nom         String
+  description String
+  bienfait    String
+  icone       String
+  isActive    Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  actions     ActionRespiration[]  @relation("ExerciceActions")
+  favoris     FavorisRespiration[] @relation("ExerciceFavoris")
+}
+
+model ActionRespiration {
+  id            String     @id @default(uuid())
+  exerciceId    String
+  ordre         Int
+  type          ActionType
+  dureeSecondes Int
+
+  exercice ExerciceRespiration @relation("ExerciceActions", fields: [exerciceId], references: [id])
+}
+
+enum ActionType {
+  INSPIRER
+  EXPIRER
+  RETENIR
+}
+
+model Diagnostic {
+  id             String   @id @default(uuid())
+  refUtilisateur String
+  score          Int
+  date           DateTime @default(now())
+
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId], onDelete: Cascade)
+
+  @@index([refUtilisateur])
+}
