@@ -7,7 +7,6 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    console.log(id)
 
     if (!id) {
       return NextResponse.json({ erreur: 'Identifiant requis' }, { status: 400 });
