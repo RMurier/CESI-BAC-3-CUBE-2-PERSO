@@ -50,7 +50,7 @@ export default function EmotionsPage() {
   }, [])
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="p-4 max-w-5xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Émotions</h2>
 
       <button
@@ -60,38 +60,40 @@ export default function EmotionsPage() {
         Ajouter une émotion
       </button>
 
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2">Nom</th>
-            <th className="p-2">Description</th>
-            <th className="p-2">Niveau</th>
-            <th className="p-2">Icône</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {emotions.map((e) => (
-            <tr key={e.id} className="border-t">
-              <td className="p-2">{e.nom}</td>
-              <td className="p-2">{e.description}</td>
-              <td className="p-2">{e.niveau}</td>
-              <td className="p-2">{e.icon}</td>
-              <td className="p-2">
-                <button
-                  onClick={() => openModal(e)}
-                  className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 text-sm"
-                >
-                  Modifier
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full border text-sm md:text-base">
+          <thead>
+            <tr className="bg-gray-100 text-left">
+              <th className="p-2 whitespace-nowrap">Nom</th>
+              <th className="p-2 whitespace-nowrap">Description</th>
+              <th className="p-2 whitespace-nowrap">Niveau</th>
+              <th className="p-2 whitespace-nowrap">Icône</th>
+              <th className="p-2 whitespace-nowrap">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {emotions.map((e) => (
+              <tr key={e.id} className="border-t">
+                <td className="p-2 break-words">{e.nom}</td>
+                <td className="p-2 break-words">{e.description}</td>
+                <td className="p-2">{e.niveau}</td>
+                <td className="p-2 break-words">{e.icon}</td>
+                <td className="p-2">
+                  <button
+                    onClick={() => openModal(e)}
+                    className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 text-sm w-full"
+                  >
+                    Modifier
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-md space-y-4">
             <h3 className="text-xl font-semibold">
               {edit ? 'Modifier une émotion' : 'Ajouter une émotion'}
@@ -126,16 +128,16 @@ export default function EmotionsPage() {
               <option value={2}>Niveau 2</option>
             </select>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-col sm:flex-row justify-end gap-2">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-full sm:w-auto"
               >
                 Annuler
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full sm:w-auto"
               >
                 {edit ? 'Modifier' : 'Ajouter'}
               </button>

@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params
+  const { id } = await params
   const body = await req.json()
 
   const dataToUpdate: any = {}

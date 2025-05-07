@@ -1,6 +1,7 @@
 import { useUser, SignOutButton, useClerk } from '@clerk/clerk-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
 
 export default function AppBar() {
   const { user, isLoaded } = useUser()
@@ -8,6 +9,7 @@ export default function AppBar() {
   const navigate = useNavigate()
 
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const checkIsAdmin = async () => {
     if (!user) return
@@ -37,6 +39,7 @@ export default function AppBar() {
   useEffect(() => {
     if (isAdmin === false) {
       ;(async () => {
+        alert("Vous n'êtes pas un administrateur.")
         await signOut()
         navigate('/login')
       })()
@@ -52,32 +55,43 @@ export default function AppBar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow px-6 py-3 flex justify-between items-center">
-      <div className="flex gap-6 items-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow px-4 py-3 flex justify-between items-center">
+      <div className="flex items-center gap-4">
         <h1
           className="text-xl font-semibold text-gray-800 cursor-pointer"
           onClick={() => navigate('/')}
         >
           CESIZEN
         </h1>
-        {user && isAdmin && (
-          <>
-            <Link to="/users" className="text-gray-700 hover:text-blue-600 font-medium">
-              Utilisateurs
-            </Link>
-            <Link to="/emotions" className="text-gray-700 hover:text-blue-600 font-medium">
-              Émotions
-            </Link>
-            <Link to="/respiration" className="text-gray-700 hover:text-blue-600 font-medium">
-              Exercices de respiration
-            </Link>
-          </>
-        )}
+
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-gray-700"
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+
+        <div className={`absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent md:flex gap-4 p-4 md:p-0 shadow md:shadow-none ${menuOpen ? 'block' : 'hidden'} md:flex`}>
+          {user && isAdmin && (
+            <>
+              <Link to="/users" className="block py-1 text-gray-700 hover:text-blue-600 font-medium">
+                Utilisateurs
+              </Link>
+              <Link to="/emotions" className="block py-1 text-gray-700 hover:text-blue-600 font-medium">
+                Émotions
+              </Link>
+              <Link to="/respiration" className="block py-1 text-gray-700 hover:text-blue-600 font-medium">
+                Exercices de respiration
+              </Link>
+            </>
+          )}
+        </div>
       </div>
+
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <span className="text-sm text-gray-600">{user.username}</span>
+            <span className="hidden md:inline text-sm text-gray-600">{user.username}</span>
             <SignOutButton>
               <button className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm">
                 Déconnexion
