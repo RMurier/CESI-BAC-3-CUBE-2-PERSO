@@ -9,8 +9,8 @@ COPY . .
 
 ENV NEXT_DISABLE_ESLINT=true
 
-RUN npm run build
 RUN npx prisma generate
+RUN npm run build
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
