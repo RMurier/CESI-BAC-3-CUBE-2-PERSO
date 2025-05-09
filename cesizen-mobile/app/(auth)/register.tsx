@@ -70,7 +70,7 @@ const Register = () => {
 
       }
       catch (ex) {
-        console.log(ex);
+        console.error(ex);
       }
     } catch (err: any) {
       alert(err.errors[0].message);

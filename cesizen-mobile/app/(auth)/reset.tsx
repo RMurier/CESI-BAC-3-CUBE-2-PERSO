@@ -39,7 +39,6 @@ const PwReset = () => {
         code,
         password,
       });
-      console.log(result);
       alert("Mot de passe changé avec succès");
       router.push("/")
 
