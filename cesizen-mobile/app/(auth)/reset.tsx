@@ -1,7 +1,7 @@
 import { View, StyleSheet, TextInput, Button } from "react-native";
 import React, { useState } from "react";
 import { Stack, useRouter } from "expo-router";
-import { useSignIn } from "@clerk/clerk-expo";
+import { SignedOut, useAuth, useSignIn } from "@clerk/clerk-expo";
 
 const PwReset = () => {
   const [emailAddress, setEmailAddress] = useState("");
@@ -10,8 +10,14 @@ const PwReset = () => {
   const [successfulCreation, setSuccessfulCreation] = useState(false);
   const { signIn, setActive } = useSignIn();
   const router = useRouter()
+  const { signOut } = useAuth();
 
   const onRequestReset = async () => {
+    try{
+      await signOut();
+    }
+    catch(e){
+    }
     try {
       if (!signIn) return;
       await signIn.create({
