@@ -17,18 +17,34 @@ model Utilisateur {
   diagnostics       Diagnostic[]
   favoris           FavorisRespiration[] @relation("UtilisateurFavoris")
   role              Role                 @relation(fields: [refRole], references: [id])
+  likes             RessourceLike[]
 }
 
 model Ressource {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  type        RessourceType
-  url         String?       // Lien vers le fichier (PDF/IMG)
-  content     String?       // Pour les ressources HTML directement stockées
-  createdAt   DateTime @default(now())
-  modifiedAt  DateTime @updatedAt
-  isActive    Boolean  @default(true)
+  id              String          @id @default(uuid())
+  title           String
+  description     String
+  type            RessourceType
+  url             String?
+  content         String?
+  imagePreviewUrl String?
+  createdAt       DateTime        @default(now())
+  modifiedAt      DateTime        @updatedAt
+  isActive        Boolean         @default(true)
+  vues            Int             @default(0)
+  likes           RessourceLike[]
+}
+
+model RessourceLike {
+  id             String   @id @default(uuid())
+  refRessource   String
+  refUtilisateur String
+  createdAt      DateTime @default(now())
+
+  ressource   Ressource   @relation(fields: [refRessource], references: [id])
+  utilisateur Utilisateur @relation(fields: [refUtilisateur], references: [clerkUserId])
+
+  @@unique([refRessource, refUtilisateur]) // 1 seul like par utilisateur
 }
 
 enum RessourceType {
