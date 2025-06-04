@@ -1,0 +1,50 @@
+name: Déploiement CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SERVER_USER: ubuntu # ou ec2-user selon ton AMI
+      SERVER_IP: ${{ secrets.EC2_SERVER_IP }}
+      SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+      PROJECT_NAME: cesizen
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Copy project to server
+        run: |
+          rsync -avz --exclude 'node_modules' --exclude '.git' ./ $SERVER_USER@$SERVER_IP:/home/$SERVER_USER/$PROJECT_NAME
+
+      - name: Deploy via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
+            cd ~/cesizen
+            git pull
+            docker compose down
+
+            # Choix du port et environnement
+            if [ "${{ github.ref_name }}" = "master" ]; then
+              export PORT=443
+              export NODE_ENV=production
+            else
+              export PORT=80
+              export NODE_ENV=development
+            fi
+
+            docker compose -f docker-compose.yml up --build -d
+          EOF
