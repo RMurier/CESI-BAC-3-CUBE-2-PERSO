@@ -1,0 +1,17 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install --legacy-peer-deps
+
+COPY . .
+
+ENV NEXT_DISABLE_ESLINT=true
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 3000
+
+CMD ["/entrypoint.sh"]

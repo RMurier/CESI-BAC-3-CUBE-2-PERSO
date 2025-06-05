@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: cesizen
+      POSTGRES_PASSWORD: cesizenpass
+      POSTGRES_DB: cesizen
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build:
+      context: ./api-cesizen
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://cesizen:cesizenpass@postgres:5432/cesizen
+    depends_on:
+      - postgres
+
+  admin:
+    build:
+      context: ./admin-cesizen
+      dockerfile: Dockerfile.dev
+      args:
+        VITE_API_BASE_ADDRESS: "http://ec2-3-208-244-252.compute-1.amazonaws.com:3000"
+    environment:
+      - VITE_API_BASE_ADDRESS=http://ec2-3-208-244-252.compute-1.amazonaws.com:3000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+  nginx:
+    image: nginx:stable
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+      - admin
+
+volumes:
+  postgres_data:
