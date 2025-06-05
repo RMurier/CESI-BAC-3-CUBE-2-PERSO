@@ -61,6 +61,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Slugify repository name
+        id: slug
+        run: |
+            repo="${GITHUB_REPOSITORY,,}"
+            repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
+            echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -68,8 +74,8 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ghcr.io/${{ github.repository }}-api:develop
-            docker pull ghcr.io/${{ github.repository }}-admin:develop
+            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:develop
+            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:develop
             cd ~/CESI-BAC-3-CUBE-2-PERSO
             docker compose -f docker-compose.dev.yml up -d --build
 
@@ -80,6 +86,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Slugify repository name
+        id: slug
+        run: |
+            repo="${GITHUB_REPOSITORY,,}"
+            repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
+            echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -87,7 +100,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ghcr.io/${{ github.repository }}-api:latest
-            docker pull ghcr.io/${{ github.repository }}-admin:latest
+            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:latest
+            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:latest
             cd ~/CESI-BAC-3-CUBE-2-PERSO
             docker compose -f docker-compose.yml up -d --build
