@@ -39,7 +39,11 @@ jobs:
 
       - name: Slugify repository name
         id: slug
-        run: echo "repo_slug=${GITHUB_REPOSITORY,,}" | sed 's/[^a-z0-9\/._-]//g' >> $GITHUB_OUTPUT
+        run: |
+            repo="${GITHUB_REPOSITORY,,}"
+            repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
+            echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
+
 
       - name: Build and push API image
         run: |
