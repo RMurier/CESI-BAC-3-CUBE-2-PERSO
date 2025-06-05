@@ -1,0 +1,86 @@
+name: Deploy CESIZen
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN_GITHUB }}
+
+      - name: Set image tag
+        id: tag
+        run: |
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "tag=develop" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push API image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}-api:${{ steps.tag.outputs.tag }} -f api-cesizen/Dockerfile.prd ./api-cesizen
+          docker push ghcr.io/${{ github.repository }}-api:${{ steps.tag.outputs.tag }}
+
+      - name: Build and push Admin image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}-admin:${{ steps.tag.outputs.tag }} -f admin-cesizen/Dockerfile.prd ./admin-cesizen
+          docker push ghcr.io/${{ github.repository }}-admin:${{ steps.tag.outputs.tag }}
+
+  deploy-dev:
+    name: Deploy DEV to Server
+    needs: build-and-push
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker pull ghcr.io/${{ github.repository }}-api:develop
+            docker pull ghcr.io/${{ github.repository }}-admin:develop
+            cd ~/CESI-BAC-3-CUBE-2-PERSO
+            docker compose -f docker-compose.dev.yml up -d --build
+
+  deploy-prod:
+    name: Deploy PROD to Server
+    needs: build-and-push
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker pull ghcr.io/${{ github.repository }}-api:latest
+            docker pull ghcr.io/${{ github.repository }}-admin:latest
+            cd ~/CESI-BAC-3-CUBE-2-PERSO
+            docker compose -f docker-compose.yml up -d --build
