@@ -37,16 +37,19 @@ jobs:
             echo "tag=develop" >> $GITHUB_OUTPUT
           fi
 
+      - name: Slugify repository name
+        id: slug
+        run: echo "repo_slug=${GITHUB_REPOSITORY,,}" | sed 's/[^a-z0-9\/._-]//g' >> $GITHUB_OUTPUT
+
       - name: Build and push API image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}-api:${{ steps.tag.outputs.tag }} -f api-cesizen/Dockerfile.prd ./api-cesizen
-          docker push ghcr.io/${{ github.repository }}-api:${{ steps.tag.outputs.tag }}
+          docker build -t ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:${{ steps.tag.outputs.tag }} -f api-cesizen/Dockerfile.prd ./api-cesizen
+          docker push ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:${{ steps.tag.outputs.tag }}
 
       - name: Build and push Admin image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}-admin:${{ steps.tag.outputs.tag }} -f admin-cesizen/Dockerfile.prd ./admin-cesizen
-          docker push ghcr.io/${{ github.repository }}-admin:${{ steps.tag.outputs.tag }}
-
+          docker build -t ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:${{ steps.tag.outputs.tag }} -f admin-cesizen/Dockerfile.prd ./admin-cesizen
+          docker push ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:${{ steps.tag.outputs.tag }}
   deploy-dev:
     name: Deploy DEV to Server
     needs: build-and-push
