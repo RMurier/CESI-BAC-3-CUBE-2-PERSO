@@ -100,9 +100,10 @@ const Register = () => {
             style={styles.inputField}
           />
           <TextInput
-            placeholder="password"
+            placeholder="mot de passe"
             value={password}
             onChangeText={setPassword}
+            autoCapitalize="none"
             secureTextEntry
             style={styles.inputField}
           />
