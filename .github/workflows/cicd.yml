@@ -107,4 +107,4 @@ jobs:
             sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:latest
             cd ~/prd
             git pull origin master
-            sudo docker compose -f docker-compose.yml up -d --build
+            sudo docker compose -f docker-compose.prd.yml up -d --build
