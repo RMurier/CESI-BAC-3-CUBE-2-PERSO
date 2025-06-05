@@ -74,10 +74,10 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:develop
-            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:develop
+            sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:develop
+            sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:develop
             cd ~/CESI-BAC-3-CUBE-2-PERSO
-            docker compose -f docker-compose.dev.yml up -d --build
+            sudo docker compose -f docker-compose.dev.yml up -d --build
 
   deploy-prod:
     name: Deploy PROD to Server
@@ -100,7 +100,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:latest
-            docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:latest
+            sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-api:latest
+            sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:latest
             cd ~/CESI-BAC-3-CUBE-2-PERSO
-            docker compose -f docker-compose.yml up -d --build
+            sudo docker compose -f docker-compose.yml up -d --build
