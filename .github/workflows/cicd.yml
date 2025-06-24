@@ -167,11 +167,19 @@ jobs:
         working-directory: cesizen-mobile
         run: npm install --legacy-peer-deps
 
+      - name: Test Expo login
+      - uses: actions/checkout@v4
+      - run: npm install -g eas-cli
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas whoami
+
       - name: Build APK with EAS
         working-directory: cesizen-mobile
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
+          npm install --legacy-peer-deps
           eas build --platform android --profile preview --non-interactive
 
       - name: Upload APK artifact
