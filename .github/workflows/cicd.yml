@@ -26,13 +26,13 @@ jobs:
         working-directory: api-cesizen
         run: npm install --legacy-peer-deps
 
-      - name: Generate coverage for admin
-        working-directory: admin-cesizen
-        run: npm run test -- --coverage
-
-      # - name: Generate coverage for api
-      #   working-directory: api-cesizen
+      # - name: Generate coverage for admin
+      #   working-directory: admin-cesizen
       #   run: npm run test -- --coverage
+
+      - name: Generate coverage for api
+        working-directory: api-cesizen
+        run: npm run test -- --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
