@@ -5,8 +5,44 @@ on:
     branches:
       - develop
       - master
+      - feat/addSonar
 
 jobs:
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies for admin
+        working-directory: admin-cesizen
+        run: npm install --legacy-peer-deps
+
+      - name: Install dependencies for api
+        working-directory: api-cesizen
+        run: npm install --legacy-peer-deps
+
+      # - name: Generate coverage for admin
+      #   working-directory: admin-cesizen
+      #   run: npm run test -- --coverage
+
+      - name: Generate coverage for api
+        working-directory: api-cesizen
+        run: npm run test -- --coverage
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: RMurier_CESI-BAC-3-CUBE-2-PERSO
+          SONAR_ORGANIZATION: rmurier
+ 
   build-and-push:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
@@ -54,6 +90,7 @@ jobs:
         run: |
           docker build -t ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:${{ steps.tag.outputs.tag }} -f admin-cesizen/Dockerfile.prd ./admin-cesizen
           docker push ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:${{ steps.tag.outputs.tag }}
+
   deploy-dev:
     name: Deploy DEV to Server
     needs: build-and-push
