@@ -20,11 +20,11 @@ jobs:
 
       - name: Install dependencies for admin
         working-directory: admin-cesizen
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Install dependencies for api
         working-directory: api-cesizen
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Generate coverage for admin
         working-directory: admin-cesizen
