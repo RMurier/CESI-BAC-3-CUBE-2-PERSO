@@ -3,7 +3,7 @@
     "name": "CESIZen",
     "slug": "cesizen-mobile",
     "version": "1.0.0",
-      "scheme": "cesizen",
+    "scheme": "cesizen",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -28,6 +28,13 @@
     "plugins": [
       "expo-secure-store",
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2c9ef6e9-719d-4a6f-93e9-b1aba5880572"
+      }
+    },
+    "owner": "zyco"
   }
 }
