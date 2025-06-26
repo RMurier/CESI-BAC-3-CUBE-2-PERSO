@@ -143,25 +143,40 @@ jobs:
             sudo docker compose -f docker-compose.prd.yml up -d --build
 
   build-mobile:
+    name: Build APK for Mobile App
+    needs: build-and-push
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: npm
+          cache: 'npm'
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
+        working-directory: cesizen-mobile
         run: npm install --legacy-peer-deps
 
-      - name: 🚀 Build app
-        run: eas build --non-interactive
+      - name: Build APK with EAS
+        working-directory: cesizen-mobile
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.TOKEN_EXPO }}
+        run: |
+          eas build --platform android --profile preview --non-interactive
+
+      - name: Wait and download APK
+        working-directory: cesizen-mobile
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.TOKEN_EXPO }}
+        run: |
+          echo "⏳ Waiting for build to finish..."
+          sleep 20
+          BUILD_URL=$(eas build:list --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
+          echo "📦 Downloading APK from $BUILD
