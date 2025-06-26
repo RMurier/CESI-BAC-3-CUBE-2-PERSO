@@ -171,3 +171,4 @@ jobs:
       - name: 🚀 Build app
         working-directory: cesizen-mobile
         run: eas build --non-interactive
+        
