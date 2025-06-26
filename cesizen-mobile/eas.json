@@ -3,6 +3,9 @@
     "production": {
       "android": {
         "buildType": "apk"
+      },
+      "npm": {
+        "legacyPeerDeps": true
       }
     }
   }
