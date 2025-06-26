@@ -166,20 +166,20 @@ jobs:
       - name: Check EXPO token
         run: echo "$EAS_ACCESS_TOKEN"
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_ACCESS_TOKEN: ${{ secrets.TOKEN_EXPO }}
 
 
       - name: Build APK with EAS
         working-directory: cesizen-mobile
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_ACCESS_TOKEN: ${{ secrets.TOKEN_EXPO }}
         run: |
           eas build --platform android --profile preview --non-interactive
 
       - name: Wait and download APK
         working-directory: cesizen-mobile
         env:
-          EAS_ACCESS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EAS_ACCESS_TOKEN: ${{ secrets.TOKEN_EXPO }}
         run: |
           echo "⏳ Waiting for build to finish..."
           sleep 20
