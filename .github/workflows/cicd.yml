@@ -144,7 +144,7 @@ jobs:
 
   build-mobile:
     name: Build APK for Mobile App
-    needs: build-and-push
+    # needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
