@@ -166,9 +166,8 @@ jobs:
 
       - name: 📦 Install dependencies
         working-directory: cesizen-mobile
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: 🚀 Build app
         working-directory: cesizen-mobile
         run: eas build --non-interactive
-        
