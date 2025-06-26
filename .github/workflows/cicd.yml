@@ -169,6 +169,6 @@ jobs:
 
       - name: 🚀 Build app (Android)
         working-directory: cesizen-mobile
-        run: eas build --non-interactive --platform android --profile production
+        run: eas build --non-interactive --platform android
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
