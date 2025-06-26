@@ -167,12 +167,6 @@ jobs:
         working-directory: cesizen-mobile
         run: npm install --legacy-peer-deps
 
-      - name: 🔐 Check if Android credentials exist
-        working-directory: cesizen-mobile
-        run: eas credentials --platform android
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
       - name: 🚀 Build app (Android)
         working-directory: cesizen-mobile
         run: eas build --non-interactive --platform android --profile production
