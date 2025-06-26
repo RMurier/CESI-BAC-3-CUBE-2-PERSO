@@ -1,12 +1,18 @@
 {
+  "cli": {
+    "version": "latest"
+  },
   "build": {
     "production": {
+      "env": {
+        "EXPO_TOKEN": "${EXPO_TOKEN}"
+      },
       "android": {
         "buildType": "apk"
-      },
-      "npm": {
-        "legacyPeerDeps": true
       }
     }
+  },
+  "hooks": {
+    "preinstall": "npm install --legacy-peer-deps"
   }
 }
