@@ -4,15 +4,9 @@
   },
   "build": {
     "production": {
-      "env": {
-        "EXPO_TOKEN": "${EXPO_TOKEN}"
-      },
       "android": {
         "buildType": "apk"
       }
     }
-  },
-  "hooks": {
-    "preinstall": "npm install --legacy-peer-deps"
   }
 }
