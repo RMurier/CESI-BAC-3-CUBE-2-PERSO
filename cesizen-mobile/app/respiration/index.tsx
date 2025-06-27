@@ -38,6 +38,7 @@ export default function ListeRespiration() {
           ? `${API_BASE_URL}/api/respiration?bienfait=${selected}`
           : `${API_BASE_URL}/api/respiration`;
 
+          console.log(url);
         const res = await fetch(url);
         const data = await res.json();
         setExercices(data);

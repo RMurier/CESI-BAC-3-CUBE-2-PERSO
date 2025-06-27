@@ -39,45 +39,65 @@ const Register = () => {
   };
 
   const onPressVerify = async () => {
-    const apiUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
+  const apiUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-    if (!isLoaded) {
-      return;
+  if (!isLoaded) {
+    return;
+  }
+  setLoading(true);
+
+  try {
+    // Step 1: Verify the email address with Clerk
+    console.log("Attempting email verification with Clerk...");
+    const completeSignUp = await signUp.attemptEmailAddressVerification({
+      code,
+    });
+    console.log("Clerk verification successful:", completeSignUp);
+
+    // Step 2: Activate the session locally
+    console.log("Activating session...");
+    await setActive({ session: completeSignUp.createdSessionId });
+    console.log("Session activated.");
+
+    // Step 3: Send user data to your backend
+    console.log("Sending user data to backend...");
+    const response = await fetch(`${apiUrl}/api/utilisateurs`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json', // Important: specify content type
+      },
+      body: JSON.stringify({
+        clerkUserId: completeSignUp.createdUserId,
+        email: completeSignUp.emailAddress,
+        nom: name,
+      }),
+    });
+
+    const responseText = await response.text(); // Get text first to inspect on error
+
+    if (!response.ok) {
+      console.error(`Backend API Error: HTTP ${response.status} - ${responseText}`);
+      throw new Error(`Échec de l'enregistrement de l'utilisateur dans la base de données. Erreur: ${responseText || 'Inconnue'}`);
     }
-    setLoading(true);
 
-    try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
-        code
-      });
-      await setActive({ session: completeSignUp.createdSessionId });
-      try {
-        const response = await fetch(`${apiUrl}/api/utilisateurs`, {
-          method: "POST",
-          body: JSON.stringify({
-            clerkUserId: completeSignUp.createdUserId,
-            email: completeSignUp.emailAddress,
-            nom: name
-          }),
-        });
-        const text = await response.text();
+    console.log("User successfully registered in backend:", responseText);
+    
+    // Step 4: Redirect to home page ONLY after all steps are successful
+    router.replace("/");
+    console.log("Redirected to home page.");
 
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP ${response.status} : ${text}`);
-        } else {
-          router.replace("/");
-        }
-
-      }
-      catch (ex) {
-        console.log(ex);
-      }
-    } catch (err: any) {
+  } catch (err: any) {
+    console.error("Error during verification or user creation:", err);
+    // Display Clerk error messages or your custom error messages
+    if (err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
       alert(err.errors[0].message);
-    } finally {
-      setLoading(false);
+    } else {
+      alert(err.message || "Une erreur inattendue est survenue lors de la vérification ou de l'enregistrement.");
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <View style={styles.container}>

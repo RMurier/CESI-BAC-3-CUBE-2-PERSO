@@ -18,7 +18,7 @@ services:
       context: ./api-cesizen
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     environment:
       DATABASE_URL: postgres://cesizen:cesizenpass@postgres:5432/cesizen
     depends_on:
@@ -38,7 +38,7 @@ services:
   nginx:
     image: nginx:stable
     ports:
-      - "8080:80"
+      - "0.0.0.0:8080:80"
     volumes:
       - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     depends_on:
