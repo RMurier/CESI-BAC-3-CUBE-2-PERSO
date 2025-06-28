@@ -13,4 +13,4 @@ echo "🏗️ Build de l'application Next.js..."
 npm run build
 
 echo "🚀 Lancement de l'API..."
-npm run start --hostname 0.0.0.0
+npx next start -H 0.0.0.0
