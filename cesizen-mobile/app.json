@@ -1,6 +1,5 @@
 {
   "expo": {
-
     "name": "CESIZen",
     "slug": "cesizen-mobile",
     "version": "1.0.0",
@@ -22,14 +21,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.zyco.cesizen" 
+      "package": "com.zyco.cesizen"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store",
-      "expo-router"
+      "expo-router",
+      "expo-web-browser",
+      "expo-video"
     ],
     "extra": {
       "router": {},

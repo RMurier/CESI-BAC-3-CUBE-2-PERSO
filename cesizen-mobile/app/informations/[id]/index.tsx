@@ -1,10 +1,11 @@
-import { Image } from 'react-native';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Image, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { Information } from '../../../interfaces/information';
 import UserHead from '../../../components/UserHead';
 import Footer from '../../../components/Footer';
+import { Video } from 'expo-av';
+import * as WebBrowser from 'expo-web-browser';
 
 export default function InfoDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -41,6 +42,7 @@ export default function InfoDetailPage() {
                 {info.titre}
               </Text>
               {info.contenus.map((contenu, index) => {
+                const fullUri = `${process.env.EXPO_PUBLIC_API_BASE_URL}${contenu.valeur}`;
                 switch (contenu.type) {
                   case 'TEXTE':
                     return (
@@ -52,22 +54,37 @@ export default function InfoDetailPage() {
                     return (
                       <Image
                         key={index}
-                        source={{ uri: contenu.valeur }}
+                        source={{ uri: fullUri }}
                         style={{ width: '100%', height: 200, borderRadius: 8, marginBottom: 12 }}
                         resizeMode="cover"
                       />
                     );
                   case 'VIDEO':
                     return (
-                      <Text key={index} style={{ color: 'blue', marginBottom: 12 }}>
-                        [Vidéo non affichée ici] {contenu.valeur}
-                      </Text>
+                      <Video
+                        key={index}
+                        source={{ uri: fullUri }}
+                        useNativeControls
+                        resizeMode="contain"
+                        style={{ width: '100%', height: 200, borderRadius: 8, marginBottom: 12 }}
+                      />
                     );
                   case 'DOCUMENT':
                     return (
-                      <Text key={index} style={{ color: 'blue', marginBottom: 12 }}>
-                        [Document] {contenu.valeur}
-                      </Text>
+                      <Pressable
+                        key={index}
+                        onPress={() => WebBrowser.openBrowserAsync(fullUri)}
+                      >
+                        <Text
+                          style={{
+                            color: 'blue',
+                            textDecorationLine: 'underline',
+                            marginBottom: 12,
+                          }}
+                        >
+                          📄 Ouvrir le document
+                        </Text>
+                      </Pressable>
                     );
                   default:
                     return null;
