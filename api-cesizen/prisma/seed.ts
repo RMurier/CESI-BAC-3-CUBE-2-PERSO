@@ -43,20 +43,21 @@ async function seed() {
   }
   console.log('✅ Seed terminé : Emotions ajoutées avec succès.');
 
-  const info = await prisma.information.upsert({
-    where: { id: 'info-cesizen-default' },
-    update: {},
-    create: {
-      id: 'info-cesizen-default',
-      titre: 'Bienvenue sur CESIZen',
-      contenus: {
-        create: {
-          type: 'TEXTE',
-          valeur: 'CESIZen est votre compagnon de bien-être pour améliorer votre santé mentale au quotidien.',
-        },
+await prisma.information.upsert({
+  where: { titre: 'Bienvenue sur CESIZen' },
+  update: {},
+  create: {
+    titre: 'Bienvenue sur CESIZen',
+    contenus: {
+      create: {
+        type: 'TEXTE',
+        valeur:
+          'CESIZen est votre compagnon de bien-être pour améliorer votre santé mentale au quotidien.',
       },
     },
-  });
+  },
+});
+
   console.log('✅ Information par défaut ajoutée avec succès.');
 
   const exercice = await prisma.exerciceRespiration.create({

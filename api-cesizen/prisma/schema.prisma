@@ -102,7 +102,7 @@ model Diagnostic {
 
 model Information {
   id          String             @id @default(uuid())
-  titre       String
+  titre       String             @unique
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   contenus    ContenuInformation[]
