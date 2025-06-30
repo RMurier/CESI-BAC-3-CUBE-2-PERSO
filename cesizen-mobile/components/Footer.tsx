@@ -11,12 +11,14 @@ export default function Footer() {
   const tabs = isSignedIn
     ? [
         { label: 'Accueil', icon: 'home', route: '/' },
+        { label: "Informations", icon: 'info', route: '/informations' },
         { label: 'Respiration', icon: 'wind', route: '/respiration' },
         { label: "Emotions", icon: 'heart', route: '/journal' },
         { label: "Stress", icon: 'activity', route: '/diagnostic/stress' },
       ]
     : [
         { label: 'Accueil', icon: 'home', route: '/' },
+        { label: "Informations", icon: 'info', route: '/informations' },
         { label: 'Respiration', icon: 'wind', route: '/respiration' },
         { label: "Stress", icon: 'activity', route: '/diagnostic/stress' },
       ];
