@@ -29,9 +29,9 @@ services:
       context: ./admin-cesizen
       dockerfile: Dockerfile.dev
       args:
-        VITE_API_BASE_ADDRESS: "http://ec2-3-208-244-252.compute-1.amazonaws.com:3000"
+        VITE_API_BASE_ADDRESS: "http://3.208.244.252:3000"
     environment:
-      - VITE_API_BASE_ADDRESS=http://ec2-3-208-244-252.compute-1.amazonaws.com:3000
+      - VITE_API_BASE_ADDRESS=http://3.208.244.252:3000
     ports:
       - "5173:5173"
     depends_on:

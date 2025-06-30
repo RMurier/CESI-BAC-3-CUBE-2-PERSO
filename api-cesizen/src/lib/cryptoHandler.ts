@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
-const SECRET_KEY = process.env.SECRET_KEY || 'ma_cle_secrete_32_chars!';
+const SECRET_KEY = (process.env.SECRET_KEY || 'ma_cle_secrete_32_chars!').slice(0, 32);
 
 export const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(10);

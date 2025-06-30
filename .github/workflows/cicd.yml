@@ -26,10 +26,6 @@ jobs:
         working-directory: api-cesizen
         run: npm install --legacy-peer-deps
 
-      # - name: Generate coverage for admin
-      #   working-directory: admin-cesizen
-      #   run: npm run test -- --coverage
-
       - name: Generate coverage for api
         working-directory: api-cesizen
         run: npm run test -- --coverage
@@ -42,7 +38,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: RMurier_CESI-BAC-3-CUBE-2-PERSO
           SONAR_ORGANIZATION: rmurier
- 
+
   build-and-push:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
@@ -76,10 +72,9 @@ jobs:
       - name: Slugify repository name
         id: slug
         run: |
-            repo="${GITHUB_REPOSITORY,,}"
-            repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
-            echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
-
+          repo="${GITHUB_REPOSITORY,,}"
+          repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
+          echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
 
       - name: Build and push API image
         run: |
@@ -101,9 +96,10 @@ jobs:
       - name: Slugify repository name
         id: slug
         run: |
-            repo="${GITHUB_REPOSITORY,,}"
-            repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
-            echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
+          repo="${GITHUB_REPOSITORY,,}"
+          repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
+          echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -128,9 +124,9 @@ jobs:
       - name: Slugify repository name
         id: slug
         run: |
-            repo="${GITHUB_REPOSITORY,,}"
-            repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
-            echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
+          repo="${GITHUB_REPOSITORY,,}"
+          repo_slug=$(echo "$repo" | tr -cd 'a-z0-9/._-')
+          echo "repo_slug=$repo_slug" >> $GITHUB_OUTPUT
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0

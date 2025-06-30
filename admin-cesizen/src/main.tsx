@@ -9,6 +9,7 @@ import LoginPage from "./pages/login.tsx";
 import UsersPage from "./pages/user.tsx";
 import EmotionsPage from "./pages/emotion.tsx";
 import ExerciceRespirationPage from "./pages/respiration.tsx";
+import ListeInformations from "./pages/informations.tsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -27,6 +28,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/users" element={<UsersPage />} />
           <Route path="/emotions" element={<EmotionsPage />} />
           <Route path="/respiration" element={<ExerciceRespirationPage />} />
+          <Route path="/informations" element={<ListeInformations />} />
         </Routes>
       </BrowserRouter>
     </ClerkProvider>

@@ -83,6 +83,9 @@ export default function AppBar() {
               <Link to="/respiration" className="block py-1 text-gray-700 hover:text-blue-600 font-medium">
                 Exercices de respiration
               </Link>
+              <Link to="/informations" className="block py-1 text-gray-700 hover:text-blue-600 font-medium">
+                Informations
+              </Link>
             </>
           )}
         </div>

@@ -99,3 +99,29 @@ model Diagnostic {
 
   @@index([refUtilisateur])
 }
+
+model Information {
+  id          String             @id @default(uuid())
+  titre       String             @unique
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  contenus    ContenuInformation[]
+}
+
+model ContenuInformation {
+  id              String           @id @default(uuid())
+  refInformation  String
+  type            MediaType
+  valeur          String
+
+  information Information @relation(fields: [refInformation], references: [id], onDelete: Cascade)
+
+  @@index([refInformation])
+}
+
+enum MediaType {
+  TEXTE
+  IMAGE
+  VIDEO
+  DOCUMENT
+}

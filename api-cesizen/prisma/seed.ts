@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, ActionType } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function seed() {
@@ -41,9 +41,47 @@ async function seed() {
       create: emotion
     });
   }
-  console.log('✅ Seed terminé : Emotions ajoutés avec succès.');
+  console.log('✅ Seed terminé : Emotions ajoutées avec succès.');
 
+await prisma.information.upsert({
+  where: { titre: 'Bienvenue sur CESIZen' },
+  update: {},
+  create: {
+    titre: 'Bienvenue sur CESIZen',
+    contenus: {
+      create: {
+        type: 'TEXTE',
+        valeur:
+          'CESIZen est votre compagnon de bien-être pour améliorer votre santé mentale au quotidien.',
+      },
+    },
+  },
+});
 
+  console.log('✅ Information par défaut ajoutée avec succès.');
+
+  const exercice = await prisma.exerciceRespiration.create({
+    data: {
+      nom: 'Respiration 4-4-4',
+      description: 'Inspirer 4 secondes, retenir 4 secondes, expirer 4 secondes.',
+      bienfait: 'Favorise la détente et la concentration.',
+      icone: 'wind',
+      actions: {
+        create: [
+          { ordre: 1, type: ActionType.INSPIRER, dureeSecondes: 4 },
+          { ordre: 2, type: ActionType.RETENIR, dureeSecondes: 4 },
+          { ordre: 3, type: ActionType.EXPIRER, dureeSecondes: 4 },
+          { ordre: 4, type: ActionType.INSPIRER, dureeSecondes: 4 },
+          { ordre: 5, type: ActionType.RETENIR, dureeSecondes: 4 },
+          { ordre: 6, type: ActionType.EXPIRER, dureeSecondes: 4 },
+          { ordre: 7, type: ActionType.INSPIRER, dureeSecondes: 4 },
+          { ordre: 8, type: ActionType.RETENIR, dureeSecondes: 4 },
+          { ordre: 9, type: ActionType.EXPIRER, dureeSecondes: 4 },
+        ]
+      }
+    }
+  });
+  console.log('✅ Exercice de respiration ajouté avec succès.');
 }
 
 seed()
