@@ -5,6 +5,7 @@ import { Information } from '../../interfaces/information';
 import InformationCard from '../../components/InformationCard';
 import UserHead from '../../components/UserHead';
 import Footer from '../../components/Footer';
+import { Stack } from 'expo-router';
 
 export default function ToutesLesInformations() {
   const [informations, setInformations] = useState<Information[]>([]);
@@ -25,31 +26,33 @@ export default function ToutesLesInformations() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
-      <UserHead />
-      <View style={{ padding: 24, flex: 1 }}>
-        <ScrollView style={{ flex: 1, marginBottom: 80 }}>
-          <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 16 }}>
-            Toutes les informations
-          </Text>
+    <>
+      <Stack.Screen options={{ title: 'Informations' }} />
+      <View style={{ flex: 1 }}>
+        <View style={{ padding: 24, flex: 1 }}>
+          <ScrollView style={{ flex: 1, marginBottom: 80 }}>
+            <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 16 }}>
+              Toutes les informations
+            </Text>
 
-          {loading ? (
-            <ActivityIndicator size="large" />
-          ) : informations.length > 0 ? (
-            informations.map((info) => (
-              <InformationCard
-                key={info.id}
-                titre={info.titre}
-                contenus={info.contenus}
-                onPress={() => router.push(`/information/${info.id}`)}
-              />
-            ))
-          ) : (
-            <Text>Aucune information disponible.</Text>
-          )}
-        </ScrollView>
+            {loading ? (
+              <ActivityIndicator size="large" />
+            ) : informations.length > 0 ? (
+              informations.map((info) => (
+                <InformationCard
+                  key={info.id}
+                  titre={info.titre}
+                  contenus={info.contenus}
+                  onPress={() => router.push(`/information/${info.id}`)}
+                />
+              ))
+            ) : (
+              <Text>Aucune information disponible.</Text>
+            )}
+          </ScrollView>
+        </View>
+        <Footer />
       </View>
-      <Footer />
-    </View>
+    </>
   );
 }

@@ -31,7 +31,7 @@ export default function Footer() {
           <TouchableOpacity
             key={tab.route}
             style={styles.tab}
-            onPress={() => router.push(tab.route)}
+            onPress={() => router.replace(tab.route)}
           >
             <Feather
               name={tab.icon as any}
