@@ -8,7 +8,7 @@ CESIZen est une application web et mobile dédiée à la gestion du stress et à
 - **Mobile** : React Native (Expo)
 - **Admin** : React
 - **Authentification** : Clerk + surcouche BDD
-- **BDD** : PostgreSQL (docker)
+- **BDD** : PostgreSQL (via Docker)
 
 ## ⚙️ Installation
 
@@ -19,20 +19,12 @@ git clone https://github.com/RMurier/CESI-BAC-3-CUBE-2-PERSO.git
 cd CESI-BAC-3-CUBE-2-PERSO
 ```
 
-### 2. Installation des dépendances
-
-Dans chaque projet (api/admin/mobile), installez les dépendances.
-
-```bash
-npm install
-```
-
-### 3. Fichiers `.env`
+### 2. Configuration des fichiers `.env`
 
 #### 📁 `api-cesizen/.env`
 
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/cesizen
+DATABASE_URL=postgresql://cesizen:cesizenpass@postgres:5432/cesizen
 SECRET_KEY=sk_test_xxx
 ```
 
@@ -46,40 +38,35 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_xxx
 #### 📁 `cesizen-mobile/.env`
 
 ```env
-EXPO_PUBLIC_API_BASE_URL=http://192.168.x.x:3000
+EXPO_PUBLIC_API_BASE_URL=http://192.168.x.x:3000 (ip locale de la machine)
 EXPO_PUBLIC_CLERK_PUBLISH_KEY=pk_test_xxx
 ```
+---
 
-_Remplace `192.168.x.x` par l’adresse IP locale de ta machine._
+## 🐳 Lancement avec Docker
 
-## 🚀 Lancement
-
-### API
-
-```bash
-cd api-cesizen
-npx prisma generate
-npx prisma migrate dev
-npm run dev
-```
-
-### Admin
+### 1. Lancer tous les services
 
 ```bash
-cd admin
-npm run dev
+docker compose -f docker-compose.dev.yml up --build
 ```
 
-Accessible sur `http://localhost:5173`
+Ce fichier lance :
 
-### Mobile
+- la base de données PostgreSQL (avec seed Prisma)
+- l’API Next.js sur `http://localhost:3000`
+- le frontend admin React sur `http://localhost:5173`
+
+### 2. Lancer l’application mobile
 
 ```bash
 cd cesizen-mobile
-npx expo start --tunnel
+npx expo start
 ```
 
 Scanner le QR code avec l'app **Expo Go**.
+
+---
 
 ## 🧪 Tests
 
@@ -89,6 +76,8 @@ Scanner le QR code avec l'app **Expo Go**.
 cd api-cesizen
 npm test
 ```
+
+---
 
 ## 🧑‍🎓 Projet personnel – CDA CESI 2025
 
