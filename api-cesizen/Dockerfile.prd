@@ -9,7 +9,7 @@ COPY . .
 
 ENV NEXT_DISABLE_ESLINT=true
 
-COPY entrypoint.prd.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 3000
