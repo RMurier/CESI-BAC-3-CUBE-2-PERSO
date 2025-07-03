@@ -100,7 +100,6 @@ export default function UsersPage() {
             ))}
           </tbody>
         </table>
-        <h1>test</h1>
       </div>
     </div>
   )
