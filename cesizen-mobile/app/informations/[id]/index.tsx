@@ -31,7 +31,6 @@ export default function InfoDetailPage() {
 
   return (
     <View style={{ flex: 1 }}>
-      <UserHead />
       <View style={{ padding: 24, flex: 1 }}>
         <ScrollView style={{ flex: 1, marginBottom: 80 }}>
           {loading ? (
