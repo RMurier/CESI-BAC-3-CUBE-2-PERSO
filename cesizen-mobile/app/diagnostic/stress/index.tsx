@@ -5,9 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
+  SafeAreaView,
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
+import Footer from '../../../components/Footer';
 
 const questions = [
   "Je me sens tendu(e) ou nerveux(se)",
@@ -34,50 +35,57 @@ export default function DiagnosticStress() {
 
   const handleSubmit = () => {
     const score = answers.reduce((sum: number, val) => sum + val, 0);
-    router.replace(`/diagnostic/stress/result?score=${score}`)
+    router.replace(`/diagnostic/stress/result?score=${score}`);
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.wrapper}>
       <Stack.Screen options={{ title: 'Diagnostic du stress' }} />
-
-      {questions.map((q, i) => (
-        <View key={i} style={styles.questionBlock}>
-          <Text style={styles.questionText}>{q}</Text>
-          <View style={styles.optionsRow}>
-            <TouchableOpacity
-              style={[styles.optionButton, answers[i] === 0 && styles.selected]}
-              onPress={() => handleSelect(i, 0)}
-            >
-              <Text style={styles.optionText}>Jamais</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.optionButton, answers[i] === 1 && styles.selected]}
-              onPress={() => handleSelect(i, 1)}
-            >
-              <Text style={styles.optionText}>Parfois</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.optionButton, answers[i] === 2 && styles.selected]}
-              onPress={() => handleSelect(i, 2)}
-            >
-              <Text style={styles.optionText}>Souvent</Text>
-            </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {questions.map((q, i) => (
+          <View key={i} style={styles.questionBlock}>
+            <Text style={styles.questionText}>{q}</Text>
+            <View style={styles.optionsRow}>
+              <TouchableOpacity
+                style={[styles.optionButton, answers[i] === 0 && styles.selected]}
+                onPress={() => handleSelect(i, 0)}
+              >
+                <Text style={styles.optionText}>Jamais</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.optionButton, answers[i] === 1 && styles.selected]}
+                onPress={() => handleSelect(i, 1)}
+              >
+                <Text style={styles.optionText}>Parfois</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.optionButton, answers[i] === 2 && styles.selected]}
+                onPress={() => handleSelect(i, 2)}
+              >
+                <Text style={styles.optionText}>Souvent</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      ))}
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>Valider le questionnaire</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        ))}
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitText}>Valider le questionnaire</Text>
+        </TouchableOpacity>
+      </ScrollView>
+      <View style={styles.footer}>
+        <Footer />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
+  wrapper: {
+    flex: 1,
     backgroundColor: '#fff',
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 100, // Pour laisser la place au footer
   },
   questionBlock: {
     marginBottom: 24,
@@ -114,11 +122,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 16,
-    marginBottom: 40,
   },
   submitText: {
     color: '#fff',
     fontWeight: '600',
     fontSize: 16,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
