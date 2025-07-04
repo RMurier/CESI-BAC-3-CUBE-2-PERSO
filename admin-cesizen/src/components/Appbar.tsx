@@ -61,7 +61,8 @@ export default function AppBar() {
           className="text-xl font-semibold text-gray-800 cursor-pointer"
           onClick={() => navigate('/')}
         >
-          CESIZEN 
+          CESIZEN !! 
+          
         </h1> 
 
         <button
