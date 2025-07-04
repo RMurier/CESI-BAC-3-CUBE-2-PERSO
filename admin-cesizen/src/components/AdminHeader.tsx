@@ -28,7 +28,7 @@ export default function AdminHeader() {
       </SignedIn>
       <SignedOut>
         <SignInButton mode="modal">
-          <button style={styles.login}>Se connecter</button>
+          <button style={styles.login}>Connexion</button>
         </SignInButton>
       </SignedOut>
     </header>
