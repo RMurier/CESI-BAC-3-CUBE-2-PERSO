@@ -112,8 +112,7 @@ jobs:
             sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:develop
             cd ~/dev
             git pull origin develop
-            sudo docker compose build --no-cache
-            sudo docker compose -f docker-compose.dev.yml up -d
+            sudo docker compose -f docker-compose.dev.yml up -d --build --force-recreate
 
   deploy-prod:
     name: Deploy PROD to Server
@@ -141,5 +140,4 @@ jobs:
             sudo docker pull ghcr.io/${{ steps.slug.outputs.repo_slug }}-admin:latest
             cd ~/prd
             git pull origin master
-            sudo docker compose build --no-cache
-            sudo docker compose -f docker-compose.dev.yml up -d
+            sudo docker compose -f docker-compose.prd.yml up -d --build --force-recreate
